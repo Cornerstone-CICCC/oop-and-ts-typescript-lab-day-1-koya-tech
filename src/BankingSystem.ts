@@ -28,27 +28,73 @@ type BankAccount = {
 
 const accounts: BankAccount[] = [];
 
-function createAccount(accountNo, firstname, lastname, initialDeposit, isActive = true) {
+function createAccount(accountNo:number, firstname:string, lastname:string, initialDeposit:number, isActive = true) {
+  const account: BankAccount = {
+    accountNo,
+    firstname,
+    lastname,
+    balance: initialDeposit,
+    isActive,
+    transactions: []
+  };
+  accounts.push(account);
+  return account;
+}
+
+function processTransaction(accountNo:number, amount:number, type:TransactionType) {
+  const account = accounts.find(account => account.accountNo === accountNo);
+  if (!account) {
+    return "Account not found";
+  }
+
+  if (type === TransactionType.Deposit) {
+    account.balance += amount;
+    account.transactions.push({ accountNo, amount, type });
+    return `${amount} deposited into account number ${accountNo}`;
+  } else {
+    if (account.balance < amount) {
+      return "Insufficient funds for withdrawal";
+    }
+    account.balance -= amount;
+    account.transactions.push({ accountNo, amount, type });
+    return `${amount} withdrawn from account number ${accountNo}`;
+  }
+}
+
+function getBalance(accountNo:number) {
+  const account=accounts.find(account => account.accountNo === accountNo);
+  if (!account) {
+    return "Account not found";
+  }
+  return account.balance;
 
 }
 
-function processTransaction(accountNo, amount, transactionType) {
+function getTransactionHistory(accountNo:number) {
+  const account=accounts.find(account => account.accountNo === accountNo);
+  if (!account) {
+    return "Account not found";
+  }
+  return account.transactions;
 
 }
 
-function getBalance(accountNo) {
+function checkActiveStatus(accountNo:number) {
+  const account=accounts.find(account => account.accountNo === accountNo);
+  if (!account) {
+    return "Account not found";
+  }
+  return account.isActive;
 
 }
 
-function getTransactionHistory(accountNo) {
-
-}
-
-function checkActiveStatus(accountNo) {
-
-}
-
-function closeAccount(accountNo) {
+function closeAccount(accountNo:number) {
+  const accountIndex = accounts.findIndex(account => account.accountNo === accountNo);
+  if (accountIndex === -1) {
+    return "Account not found";
+  }
+  accounts.splice(accountIndex, 1);
+  return `Account number ${accountNo} closed`;
 
 }
 

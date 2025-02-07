@@ -8,27 +8,51 @@
 
 enum MovieGenre {
   Action,
-  // add 4 more
+  Comedy,
+  Drama,
+  Horror,
+  SciFi
 }
 
-type Seat = [string, number]
+type Seat = [string, number];
 
 type Movie = {
-
-}
+  movieId: number;
+  title: string;
+  genre: MovieGenre;
+  availableSeats: Seat[];
+};
 
 const movies: Movie[] = [];
 
-function addMovie(movieId, title, genre, availableSeats) {
-
+function addMovie(movieId: number, title: string, genre: MovieGenre, availableSeats: Seat[]): Movie {
+  const movie: Movie = { movieId, title, genre, availableSeats };
+  movies.push(movie);
+  return movie;
 }
 
-function bookSeat(movieId, rowLetter, seatNumber) {
+function bookSeat(movieId: number, rowLetter: string, seatNumber: number): string {
+  const movie: Movie = movies.filter(movie => movie.movieId === movieId)[0];
+  if (!movie) {
+    return "Movie not found";
+  }
 
+  const seatIndex = movie.availableSeats.findIndex(seat => seat[0] === rowLetter && seat[1] === seatNumber);
+  if (seatIndex === -1) {
+    return "Seat not found";
+  }
+
+  movie.availableSeats.splice(seatIndex, 1);
+  return `Seat ${rowLetter}${seatNumber} booked successfully`;
 }
 
-function checkSeatAvailability(movieId, rowLetter, seatNumber) {
+function checkSeatAvailability(movieId: number, rowLetter: string, seatNumber: number): boolean {
+  const movie: Movie = movies.filter(movie => movie.movieId === movieId)[0];
+  if (!movie) {
+    return false;
+  }
 
+  return movie.availableSeats.some(seat => seat[0] === rowLetter && seat[1] === seatNumber);
 }
 
 // Test cases (Create more if needed)

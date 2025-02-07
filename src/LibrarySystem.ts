@@ -9,32 +9,84 @@
 
 enum BookGenre {
   Fantasy,
-  // add 4 more
+  Mistery,
+  Romance,
+  Fiction,
+  Documentary
 }
 
 type Book = {
-
+  bookId: number;
+  title: string;
+  author: string;
+  genre: BookGenre;
+  isAvailable: boolean;
 }
 
 const library: Book[] = [];
 
-function addBook(bookId, title, author, genre) {
+function addBook(bookId: number, title: string, author: string, genre: BookGenre): Book {
+  const book: Book = {
+    bookId,
+    title,
+    author,
+    genre,
+    isAvailable: true
+  }
+  library.push(book);
+  return book;
 
 }
 
-function borrowBook(bookId) {
+function borrowBook(bookId: number) {
+  const book = library.find(book => book.bookId === bookId);
+  if (!book) {
+    return "Book not found";
+  }
+
+  if (!book.isAvailable) {
+    return `${book.title} is not available`;
+  }
+
+  book.isAvailable = false;
+  return `${book.title} has been borrowed`;
 
 }
 
-function returnBook(bookId) {
+function returnBook(bookId: number) {
+  const book = library.find(book => book.bookId === bookId);
+  if (!book) {
+    return "Book not found";
+  }
+
+  if (book.isAvailable) {
+    return `${book.title} is already available`;
+  }
+
+  book.isAvailable = true;
+  return `${book.title} has been returned`;
 
 }
 
-function checkAvailability(bookId) {
+function checkAvailability(bookId: number): boolean {
+  const book = library.find(book => book.bookId === bookId);
+  if (!book) {
+    return false;
+  }
+
+  return book.isAvailable;
 
 }
 
-function removeBook(bookId) {
+function removeBook(bookId: number) {
+  const book = library.find(book => book.bookId === bookId);
+  if (!book) {
+    return "Book not found";
+  }
+
+  const bookIndex = library.findIndex(book => book.bookId === bookId);
+  library.splice(bookIndex, 1);
+  return `${book.title} has been removed from the library`;
 
 }
 
